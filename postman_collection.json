@@ -1,30 +1,15 @@
 {
   "info": {
-    "name": "Travel Planner API",
-    "description": "Complete API collection for Travel Planner - A system for managing travel projects and places",
+    "_postman_id": "e83f8092-e66c-4260-9a69-2d5fb6556eb8",
+    "name": "Travel Planner API - Complete Collection",
+    "description": "# Travel Planner API\n\nA comprehensive API for managing travel projects focused on art museum visits.\n\n## Quick Start\n\n1. **Set Environment**: Use the included variables or create an environment\n   - `base_url`: API base URL (default: http://localhost:8000)\n   - `project_id`: Current working project ID\n   - `place_id`: Current working place ID\n\n2. **Testing Workflow**:\n   - Start with Health Check endpoints\n   - Create a project (empty or with places)\n   - Add/update places as needed\n   - Mark places as visited\n   - View project completion status\n\n3. **Key Features**:\n   - Maximum 10 places per project\n   - Auto-completion when all places visited\n   - Cannot delete projects with visited places\n   - No duplicate places in same project\n\n## Business Rules\n\n- **Max Places**: 10 places per project\n- **Valid Artwork IDs**: Must exist in Art Institute of Chicago database\n- **Project Completion**: Automatically marked complete when all places visited\n- **Delete Restrictions**: Cannot delete projects with visited places\n- **Uniqueness**: Cannot add same artwork twice to one project\n\n## Response Codes\n\n- `200`: Success\n- `201`: Created\n- `204`: Deleted\n- `400`: Validation error\n- `404`: Not found\n- `422`: Business rule violation",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "1.0.0"
+    "_exporter_id": "52164505",
+    "_collection_link": "https://go.postman.co/collection/52164505-e83f8092-e66c-4260-9a69-2d5fb6556eb8?source=collection_link"
   },
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8000",
-      "type": "string"
-    },
-    {
-      "key": "project_id",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "place_id",
-      "value": "1",
-      "type": "string"
-    }
-  ],
   "item": [
     {
-      "name": "Health Check",
+      "name": "1. Health Check",
       "item": [
         {
           "name": "Root Endpoint",
@@ -33,10 +18,14 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/",
-              "host": ["{{base_url}}"],
-              "path": [""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
             },
-            "description": "Check API root endpoint"
+            "description": "Check API root endpoint - returns welcome message and API version"
           },
           "response": []
         },
@@ -47,20 +36,40 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
             },
-            "description": "Check API health status"
+            "description": "Check API health status - returns database connectivity and service status"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Verify API is running and accessible"
     },
     {
-      "name": "Projects",
+      "name": "2. Projects - CRUD Operations",
       "item": [
         {
-          "name": "Create Project (Empty)",
+          "name": "Create Empty Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.environment.set('project_id', jsonData.id);",
+                  "    console.log('Project ID saved: ' + jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -75,15 +84,35 @@
             },
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Create a new project without places"
+            "description": "Create a new project without any places. You can add places later.\n\n**Auto-saves project_id to environment variable for use in subsequent requests.**"
           },
           "response": []
         },
         {
           "name": "Create Project with Places",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.environment.set('project_id', jsonData.id);",
+                  "    console.log('Project ID saved: ' + jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -94,14 +123,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"European Art Tour\",\n  \"description\": \"Renaissance and Impressionist masterpieces\",\n  \"start_date\": \"2024-07-15\",\n  \"places\": [\n    {\n      \"external_id\": \"27992\",\n      \"notes\": \"A Sunday on La Grande Jatte - Must see the pointillism technique\"\n    },\n    {\n      \"external_id\": \"28560\",\n      \"notes\": \"The Bedroom by Van Gogh - Check the perspective\"\n    },\n    {\n      \"external_id\": \"111628\",\n      \"notes\": \"Stacks of Wheat by Monet - Beautiful light effects\"\n    }\n  ]\n}"
+              "raw": "{\n  \"name\": \"European Art Tour\",\n  \"description\": \"Renaissance and Impressionist masterpieces\",\n  \"start_date\": \"2024-07-15\",\n  \"places\": [\n    {\n      \"external_place_id\": \"27992\",\n      \"notes\": \"A Sunday on La Grande Jatte - Must see the pointillism technique\"\n    },\n    {\n      \"external_place_id\": \"28560\",\n      \"notes\": \"The Bedroom by Van Gogh - Check the perspective\"\n    },\n    {\n      \"external_place_id\": \"111628\",\n      \"notes\": \"Stacks of Wheat by Monet - Beautiful light effects\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Create a project with multiple places in one request"
+            "description": "Create a project with multiple places in one request. More efficient than creating empty project then adding places one by one.\n\n**Maximum 10 places allowed.**\n**Auto-saves project_id to environment variable.**"
           },
           "response": []
         },
@@ -112,10 +146,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Get list of all projects (default pagination)"
+            "description": "Get list of all projects with default pagination (100 items max).\n\nReturns array of projects with basic info and place counts."
           },
           "response": []
         },
@@ -126,22 +165,27 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/?skip=0&limit=5",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ],
               "query": [
                 {
                   "key": "skip",
                   "value": "0",
-                  "description": "Number of records to skip"
+                  "description": "Number of records to skip (for pagination)"
                 },
                 {
                   "key": "limit",
                   "value": "5",
-                  "description": "Maximum records to return"
+                  "description": "Maximum number of records to return (max 100)"
                 }
               ]
             },
-            "description": "Get paginated list of projects"
+            "description": "Get paginated list of projects. Useful for large datasets.\n\n**Parameters:**\n- `skip`: Offset for pagination (default: 0)\n- `limit`: Max items to return (default: 100, max: 100)"
           },
           "response": []
         },
@@ -152,15 +196,20 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
             },
-            "description": "Get details of a specific project with all places"
+            "description": "Get complete details of a specific project including:\n- All project metadata\n- All associated places with full details\n- Completion status\n- Visit statistics"
           },
           "response": []
         },
         {
-          "name": "Update Project",
+          "name": "Update Project - Full",
           "request": {
             "method": "PUT",
             "header": [
@@ -171,19 +220,24 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Project Name\",\n  \"description\": \"Updated description with more details\",\n  \"start_date\": \"2024-08-01\"\n}"
+              "raw": "{\n  \"name\": \"Updated European Art Tour\",\n  \"description\": \"Updated: Renaissance, Impressionist, and Modern masterpieces\",\n  \"start_date\": \"2024-08-01\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
             },
-            "description": "Update project information (all fields optional)"
+            "description": "Update multiple fields of a project. All fields are optional - only include fields you want to update."
           },
           "response": []
         },
         {
-          "name": "Update Project (Partial)",
+          "name": "Update Project - Name Only",
           "request": {
             "method": "PUT",
             "header": [
@@ -194,14 +248,47 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Just Update Name\"\n}"
+              "raw": "{\n  \"name\": \"Just Update the Name\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
             },
-            "description": "Update only specific fields of a project"
+            "description": "Example of partial update - only updating the project name. Other fields remain unchanged."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project - Description Only",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description with more context and details\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/projects/{{project_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
+            },
+            "description": "Example of partial update - only updating the description."
           },
           "response": []
         },
@@ -212,20 +299,41 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
             },
-            "description": "Delete a project (fails if any places are visited)"
+            "description": "Delete a project and all its places.\n\n**⚠️ RESTRICTION**: Cannot delete if any places have been marked as visited. You must first unmark all visited places or create a new project."
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Create, read, update, and delete travel projects"
     },
     {
-      "name": "Places",
+      "name": "3. Places - CRUD Operations",
       "item": [
         {
           "name": "Add Place to Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.environment.set('place_id', jsonData.id);",
+                  "    console.log('Place ID saved: ' + jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -236,14 +344,21 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"external_id\": \"16568\",\n  \"notes\": \"American Gothic by Grant Wood - Iconic American painting\"\n}"
+              "raw": "{\n  \"external_place_id\": \"16568\",\n  \"notes\": \"American Gothic by Grant Wood - Iconic American painting depicting rural life\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                ""
+              ]
             },
-            "description": "Add a new place to an existing project"
+            "description": "Add a new place (artwork) to an existing project.\n\n**Requirements:**\n- `external_place_id` must be valid Art Institute artwork ID\n- Cannot exceed 10 places per project\n- Cannot add duplicate artwork to same project\n- `notes` are optional\n\n**Auto-saves place_id to environment variable.**"
           },
           "response": []
         },
@@ -254,10 +369,17 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                ""
+              ]
             },
-            "description": "Get all places for a specific project"
+            "description": "Get all places for a specific project with full artwork details from Art Institute API.\n\nReturns:\n- Place metadata (id, notes, visited status)\n- Full artwork information (title, artist, image, etc.)"
           },
           "response": []
         },
@@ -268,15 +390,22 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/{{place_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", "{{place_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                "{{place_id}}"
+              ]
             },
-            "description": "Get details of a specific place in a project"
+            "description": "Get details of a specific place in a project.\n\nIncludes:\n- Place ID and notes\n- Visited status\n- Complete artwork details from Art Institute"
           },
           "response": []
         },
         {
-          "name": "Update Place Notes",
+          "name": "Update Place - Notes Only",
           "request": {
             "method": "PUT",
             "header": [
@@ -287,14 +416,21 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"notes\": \"Updated notes with more observations\"\n}"
+              "raw": "{\n  \"notes\": \"Updated notes: The brushwork technique is particularly impressive up close\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/{{place_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", "{{place_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                "{{place_id}}"
+              ]
             },
-            "description": "Update only the notes for a place"
+            "description": "Update only the notes for a place without changing visited status."
           },
           "response": []
         },
@@ -310,38 +446,101 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"visited\": true,\n  \"notes\": \"Visited on June 15th - Absolutely stunning!\"\n}"
+              "raw": "{\n  \"visited\": true,\n  \"notes\": \"Visited on June 15th, 2024 - Absolutely stunning! The colors are even more vibrant in person.\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/{{place_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", "{{place_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                "{{place_id}}"
+              ]
             },
-            "description": "Mark a place as visited (auto-completes project when all places visited)"
+            "description": "Mark a place as visited and optionally add visit notes.\n\n**Auto-completion:** When all places in a project are marked as visited, the project is automatically marked as complete."
           },
           "response": []
         },
         {
-          "name": "Delete Place",
+          "name": "Unmark Place as Visited",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"visited\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/projects/{{project_id}}/places/{{place_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                "{{place_id}}"
+              ]
+            },
+            "description": "Unmark a place as visited (e.g., if marked by mistake).\n\nThis allows project deletion if needed."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Place from Project",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}/places/{{place_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}", "places", "{{place_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                "{{place_id}}"
+              ]
             },
-            "description": "Remove a place from a project"
+            "description": "Remove a place from a project permanently.\n\nCan delete whether visited or not."
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Manage places (artworks) within projects"
     },
     {
-      "name": "Test Scenarios",
+      "name": "4. Validation Tests",
       "item": [
         {
-          "name": "Test: Create Project with Max Places (10)",
+          "name": "Test: Maximum 10 Places (Success)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Project has exactly 10 places', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.places).to.have.lengthOf(10);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -352,19 +551,42 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Maximum Capacity Project\",\n  \"description\": \"Testing with 10 places\",\n  \"places\": [\n    {\"external_id\": \"27992\", \"notes\": \"Place 1\"},\n    {\"external_id\": \"28560\", \"notes\": \"Place 2\"},\n    {\"external_id\": \"111628\", \"notes\": \"Place 3\"},\n    {\"external_id\": \"16568\", \"notes\": \"Place 4\"},\n    {\"external_id\": \"109275\", \"notes\": \"Place 5\"},\n    {\"external_id\": \"14655\", \"notes\": \"Place 6\"},\n    {\"external_id\": \"20684\", \"notes\": \"Place 7\"},\n    {\"external_id\": \"79307\", \"notes\": \"Place 8\"},\n    {\"external_id\": \"81558\", \"notes\": \"Place 9\"},\n    {\"external_id\": \"90048\", \"notes\": \"Place 10\"}\n  ]\n}"
+              "raw": "{\n  \"name\": \"Maximum Capacity Project\",\n  \"description\": \"Testing with exactly 10 places (maximum allowed)\",\n  \"start_date\": \"2024-06-01\",\n  \"places\": [\n    {\"external_place_id\": \"27992\", \"notes\": \"Place 1: A Sunday on La Grande Jatte\"},\n    {\"external_place_id\": \"28560\", \"notes\": \"Place 2: The Bedroom\"},\n    {\"external_place_id\": \"111628\", \"notes\": \"Place 3: Stacks of Wheat\"},\n    {\"external_place_id\": \"16568\", \"notes\": \"Place 4: American Gothic\"},\n    {\"external_place_id\": \"109275\", \"notes\": \"Place 5: Nighthawks\"},\n    {\"external_place_id\": \"14655\", \"notes\": \"Place 6: Paris Street; Rainy Day\"},\n    {\"external_place_id\": \"20684\", \"notes\": \"Place 7: The Child's Bath\"},\n    {\"external_place_id\": \"79307\", \"notes\": \"Place 8: The Old Guitarist\"},\n    {\"external_place_id\": \"81558\", \"notes\": \"Place 9: Grainstack\"},\n    {\"external_place_id\": \"90048\", \"notes\": \"Place 10: Sky Above Clouds IV\"}\n  ]\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Test creating a project with maximum allowed places (10)"
+            "description": "**Expected:** Success (201)\n\nCreate a project with exactly 10 places, which is the maximum allowed."
           },
           "response": []
         },
         {
-          "name": "Test: Exceed Max Places (Should Fail)",
+          "name": "Test: Exceed Max Places (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 422', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                  "});",
+                  "",
+                  "pm.test('Error message mentions max places', function() {",
+                  "    const responseText = pm.response.text().toLowerCase();",
+                  "    pm.expect(responseText).to.include('10');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -375,19 +597,37 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Too Many Places\",\n  \"places\": [\n    {\"external_id\": \"27992\"},\n    {\"external_id\": \"28560\"},\n    {\"external_id\": \"111628\"},\n    {\"external_id\": \"16568\"},\n    {\"external_id\": \"109275\"},\n    {\"external_id\": \"14655\"},\n    {\"external_id\": \"20684\"},\n    {\"external_id\": \"79307\"},\n    {\"external_id\": \"81558\"},\n    {\"external_id\": \"90048\"},\n    {\"external_id\": \"99539\"}\n  ]\n}"
+              "raw": "{\n  \"name\": \"Too Many Places Project\",\n  \"description\": \"This should fail - 11 places exceeds the limit\",\n  \"places\": [\n    {\"external_place_id\": \"27992\"},\n    {\"external_place_id\": \"28560\"},\n    {\"external_place_id\": \"111628\"},\n    {\"external_place_id\": \"16568\"},\n    {\"external_place_id\": \"109275\"},\n    {\"external_place_id\": \"14655\"},\n    {\"external_place_id\": \"20684\"},\n    {\"external_place_id\": \"79307\"},\n    {\"external_place_id\": \"81558\"},\n    {\"external_place_id\": \"90048\"},\n    {\"external_place_id\": \"99539\"}\n  ]\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Test validation: Should fail with 11 places (max is 10)"
+            "description": "**Expected:** Error (400/422)\n\nAttempt to create project with 11 places. Should fail with validation error about maximum 10 places."
           },
           "response": []
         },
         {
-          "name": "Test: Invalid Artwork ID (Should Fail)",
+          "name": "Test: Invalid Artwork ID (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 404 or 422', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404, 422]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -398,19 +638,37 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Invalid Place Test\",\n  \"places\": [\n    {\n      \"external_id\": \"999999999\",\n      \"notes\": \"This artwork ID doesn't exist\"\n    }\n  ]\n}"
+              "raw": "{\n  \"name\": \"Invalid Artwork Test\",\n  \"description\": \"Testing with non-existent artwork ID\",\n  \"places\": [\n    {\n      \"external_place_id\": \"999999999\",\n      \"notes\": \"This artwork ID doesn't exist in the Art Institute database\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", ""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
             },
-            "description": "Test validation: Should fail with non-existent artwork ID"
+            "description": "**Expected:** Error (400/404/422)\n\nAttempt to create project with non-existent artwork ID. Should fail because API validates artwork IDs against Art Institute database."
           },
           "response": []
         },
         {
-          "name": "Test: Duplicate Place (Should Fail)",
+          "name": "Test: Duplicate Place in Same Project (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 409 or 422', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 409, 422]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -421,51 +679,177 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"external_id\": \"27992\",\n  \"notes\": \"Trying to add duplicate place\"\n}"
+              "raw": "{\n  \"external_place_id\": \"27992\",\n  \"notes\": \"Trying to add a duplicate place to the same project\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/projects/1/places/",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "1", "places", ""]
+              "raw": "{{base_url}}/projects/{{project_id}}/places/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}",
+                "places",
+                ""
+              ]
             },
-            "description": "Test validation: Should fail when adding duplicate place to same project"
+            "description": "**Expected:** Error (400/409/422)\n\n**Prerequisites:**\n1. Create a project first\n2. Add artwork ID 27992 to it\n3. Run this request\n\nAttempting to add the same artwork twice to one project should fail."
           },
           "response": []
         },
         {
-          "name": "Test: Delete Project with Visited Place (Should Fail)",
+          "name": "Test: Delete Project with Visited Place (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 422', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                  "});",
+                  "",
+                  "pm.test('Error mentions visited places', function() {",
+                  "    const responseText = pm.response.text().toLowerCase();",
+                  "    pm.expect(responseText).to.include('visit');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "{{project_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
             },
-            "description": "Test validation: Should fail if project has visited places"
+            "description": "**Expected:** Error (400/422)\n\n**Prerequisites:**\n1. Create a project with places\n2. Mark at least one place as visited\n3. Run this request\n\nCannot delete a project that has visited places. This is a business rule to prevent accidental data loss."
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Missing Required Fields (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 422', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Project without a name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/projects/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                ""
+              ]
+            },
+            "description": "**Expected:** Error (400/422)\n\nAttempt to create project without required 'name' field."
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Get Non-existent Project (Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/projects/99999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "99999"
+              ]
+            },
+            "description": "**Expected:** 404 Not Found\n\nAttempt to retrieve a project that doesn't exist."
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Test error handling and business rule validation"
     },
     {
-      "name": "Sample Artwork IDs",
+      "name": "5. Reference Data",
       "item": [
         {
-          "name": "Info: Valid Artwork IDs",
+          "name": "Valid Artwork IDs Reference",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{base_url}}/",
-              "host": ["{{base_url}}"],
-              "path": [""]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
             },
-            "description": "Valid Art Institute artwork IDs for testing:\n\n- 27992: A Sunday on La Grande Jatte by Georges Seurat\n- 28560: The Bedroom by Vincent van Gogh\n- 111628: Stacks of Wheat by Claude Monet\n- 16568: American Gothic by Grant Wood\n- 109275: Nighthawks by Edward Hopper\n- 14655: Paris Street; Rainy Day by Gustave Caillebotte\n- 20684: The Child's Bath by Mary Cassatt\n- 79307: The Old Guitarist by Pablo Picasso\n- 81558: Grainstack by Claude Monet\n- 90048: Sky Above Clouds IV by Georgia O'Keeffe\n\nUse these IDs when testing place creation endpoints."
+            "description": "# Valid Art Institute of Chicago Artwork IDs\n\nUse these verified artwork IDs when testing place creation:\n\n## Impressionist & Post-Impressionist\n- **27992**: A Sunday on La Grande Jatte by Georges Seurat (1884)\n- **28560**: The Bedroom by Vincent van Gogh (1889)\n- **111628**: Stacks of Wheat (End of Summer) by Claude Monet (1890-91)\n- **81558**: Grainstack (Sunset) by Claude Monet (1890-91)\n- **14655**: Paris Street; Rainy Day by Gustave Caillebotte (1877)\n\n## American Art\n- **16568**: American Gothic by Grant Wood (1930)\n- **109275**: Nighthawks by Edward Hopper (1942)\n- **20684**: The Child's Bath by Mary Cassatt (1893)\n- **90048**: Sky Above Clouds IV by Georgia O'Keeffe (1965)\n\n## Modern Art\n- **79307**: The Old Guitarist by Pablo Picasso (1903-04)\n\n## Testing Tips\n- These IDs are verified to exist in the Art Institute API\n- Use them in any combination for testing\n- They represent diverse artists and periods\n- All have rich metadata and images available"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Sample artwork IDs and reference information"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "project_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "place_id",
+      "value": "1",
+      "type": "string"
     }
   ]
 }

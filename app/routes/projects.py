@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from db import get_db
-from models import TravelProject, ProjectPlace
-from schemas import (
+from app.db import get_db
+from app.models.models import TravelProject, ProjectPlace
+from app.schemas.schemas import (
     ProjectCreate,
     ProjectUpdate,
     ProjectInDB,
     ProjectListResponse,
     MessageResponse
 )
-from services.art_institute import art_service
+from app.services.art_institute import art_service
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
