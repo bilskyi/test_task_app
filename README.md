@@ -26,8 +26,14 @@ Thank you for your interest in contributing to the Travel Planner API! This docu
    ```bash
    pip install -r requirements.txt
    ```
-
-4. **Run the application**
+   
+4. **Setup Environment**
+   ```bash
+   cp .env.example .env
+   # DATABASE_URL=sqlite:///db.sqlite3
+   ```
+   
+5. **Run the application**
    ```bash
    fastapi dev
    ```
