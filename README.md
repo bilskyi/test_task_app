@@ -29,8 +29,8 @@ Thank you for your interest in contributing to the Travel Planner API! This docu
    
 4. **Setup Environment**
    ```bash
-   cp .env.example .env
-   # DATABASE_URL=sqlite:///db.sqlite3
+   touch .env
+   # paste this DATABASE_URL=sqlite:///db.sqlite3
    ```
    
 5. **Run the application**
